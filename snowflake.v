@@ -4,7 +4,7 @@ import time
 
 // discord_epoch is Discord's epoch in milliseconds.
 pub const (
-	discord_epoch = 1420070400000
+	discord_epoch = u64(1420070400000)
 )
 
 // Snowflake is the type for a Discord snowflake.
@@ -14,16 +14,15 @@ pub:
 	increment           u64
 	internal_process_id u64
 	internal_worker_id  u64
-	timestamp           time.Time
 }
 
-pub fn new(id u64) &Snowflake {
+// new creates a new snowflake.
+fn new(id u64) &Snowflake {
 	return &Snowflake{
 		id: id
 		increment: id & 0xFFF
 		internal_process_id: (id & 0x1F000) >> 12
 		internal_worker_id: (id & 0x3E0000) >> 17
-		timestamp: time.unix(((s.id >> 22) + discord_epoch) / 1000)
 	}
 }
 
@@ -35,4 +34,9 @@ pub fn (s &Snowflake) i64() i64 {
 // str gets the snowflake as a string.
 pub fn (s &Snowflake) str() string {
 	return s.id.str()
+}
+
+// time converts the snowflake to a time.Time object.
+pub fn (s &Snowflake) time() time.Time {
+	return time.unix(((s.id >> 22) + discord_epoch) / 1000)
 }
